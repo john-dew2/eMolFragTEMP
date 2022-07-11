@@ -1,6 +1,7 @@
+import sys
 from pathlib import Path
-from unittests import utilities
-from input import Configuration
+import utilities
+
 
 def runReadCommandLine(arguments, expec_result):
     initializer = Options()
@@ -50,8 +51,9 @@ def runtest(test_name, test_func, successful, failed):
     else:
         failed.append(test_name)
 
-def runtests(printlevel):
-    utilities.emit(printlevel, f'Executing {__name__} unit tests.')
+def runtests():
+    printlevel = 1
+    utilities.emit(f"Executing {__name__} unit tests.")
     
     #
     # Define all tests as a Dictionary: {str-name, <function-to-execute>}
