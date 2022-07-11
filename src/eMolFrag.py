@@ -1,6 +1,6 @@
 
 import sys
-from Molecule import Molecule
+from representation import Molecule
 from pathlib import Path
 from rdkit import Chem
 from input import AcquireFiles
