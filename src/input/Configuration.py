@@ -4,9 +4,9 @@ from input import AcquireFiles
 #
 # Acquires and reads a configuration file and returns the command line arguments nested in the file
 #
-def readConfigurationFile(file):
+def readConfigurationFile(config_file):
     #acquire path to folder
-    path = AcquireFiles.acquireConfigurationFile(file)
+    path = AcquireFiles.acquireConfigurationFile(config_file)
     retString = ""
     
     #read the lines
@@ -34,6 +34,7 @@ def readCommandLine(initializer, arguments):
     for i in range(len(arguments)):
         if (arguments[i] in argTypes):
             initializer.setOption(arguments[i], arguments[i + 1])
+    return True
             
 #
 # Reads user input and begins configuration
@@ -43,8 +44,10 @@ def readConfigurationInput(initializer, arguments):
     #if length is 1, then no arguments wer eprovided
     if (len(arguments) <= 1):
         print(f"No arguments we're provided")
+        return False
     #if length is 2, then only one argument was provided, meaning the only argument is a file
     if (len(arguments) == 2):
         arg = readConfigurationFile(arguments[1])
     #otherwise read the command line arguments provided
     readCommandLine(initializer, arg)
+    return True

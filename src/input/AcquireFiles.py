@@ -46,6 +46,6 @@ def acquireConfigurationFile(file):
 
     if not filePath.exists():
         print(f'Input path {file} does not exist.')
-        return
+        return None
     
     return filePath

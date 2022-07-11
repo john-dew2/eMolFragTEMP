@@ -1,0 +1,1 @@
+!python eMolFrag-2/src/eMolFrag.py -i /content/input -o output/ -p 16 -c 1
