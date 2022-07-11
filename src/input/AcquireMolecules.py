@@ -1,6 +1,6 @@
 from rdkit import Chem
 from pathlib import Path
-from Molecule import Molecule
+from representation import Molecule
 
 import constants
 

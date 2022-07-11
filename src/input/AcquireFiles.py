@@ -1,8 +1,11 @@
 
-from Options import Options
+from input import Options
 from pathlib import Path
 
-def acquireFiles(initializer):
+#
+# Given the input path conatining molecules, make a list of all the file paths
+#
+def acquireMoleculeFiles(initializer):
 
     folderPath = Path(initializer.INPUT_PATH)
 
@@ -31,3 +34,15 @@ def acquireFiles(initializer):
         print(f'The following files will be ignored:\n\t{"\n\t".join(bad_files)}')
             
     return files
+
+#
+# Given a configuration file, return the file path
+#
+def acquireConfigurationFile(file):
+    filePath = Path(file)
+
+    if not filePath.exists():
+        print(f'Input path {file} does not exist.')
+        return
+    
+    return filePath

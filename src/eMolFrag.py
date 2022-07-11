@@ -1,19 +1,18 @@
 
 import sys
 from Molecule import Molecule
-from Options import Options
 from pathlib import Path
 from rdkit import Chem
-import AcquireFiles
-import AcquireMolecules
+from input import AcquireFiles
+from input import AcquireMolecules
+from input import Configuration
 
 def main():
     dataset = []
     
 	#Verify Tools and Parse Command Line
     args = sys.argv
-    initializer = Options()
-    initializer.parseCommandLine(args)
+    Configuration.readConfigurationInput(args)
     
     #Input System
     files = AcquireFiles.acquireFiles(initializer)
