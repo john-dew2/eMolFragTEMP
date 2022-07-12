@@ -1,6 +1,9 @@
 import sys
 from pathlib import Path
-import utilities
+from eMolFragTEMP.unittests import utilities
+
+#from ..src.input import Configuration, Options
+from eMolFragTEMP.src.input import Configuration, Options
 
 
 def runReadCommandLine(arguments, expec_result):
@@ -12,15 +15,15 @@ def runReadCommandLineTests():
     pass
     
 def runReadConfigurationFile(config_file, expec_result):
-    assert Configuration.ReadConfigurationFile(config_file) == expec_result
+    assert Configuration.readConfigurationFile(config_file) == expec_result
 
 def runReadConfigurationFileTests():
-    runReadConfigurationFile("./data/config-files/comment1.txt", ['eMolFrag-2/src/eMolFrag.py', '-i', '/content/input', '-o', 'output/', '-p', '16', '-c', '1'])
-    runReadConfigurationFile("./data/config-files/comment2.txt", ['eMolFrag-2/src/eMolFrag.py', '-i', '/content/input', '-o', 'output/', '-p', '16', '-c', '1'])
-    runReadConfigurationFile("./data/config-files/comment3.txt", ['eMolFrag-2/src/eMolFrag.py', '-i', '/content/input', '-o', 'output/', '-p', '16', '-c', '1'])
-    runReadConfigurationFile("./data/config-files/comment4.txt", [])
-    runReadConfigurationFile("./data/config-files/normal1.txt",  ['eMolFrag-2/src/eMolFrag.py', '-i', '/content/input', '-o', 'output/', '-p', '16', '-c', '1'])
-    runReadConfigurationFile("./data/config-files/normal2.txt",  ['eMolFrag-2/src/eMolFrag.py', '-i', '/content/input', '-o', 'output/', '-p', '0', '-c', '0'])
+    runReadConfigurationFile("/content/eMolFragTEMP/unittests/data/config-files/comment1.txt", ['\n!python', 'eMolFrag-2/src/eMolFrag.py', '-i', '/content/input', '-o', 'output/', '-p', '16', '-c', '1'])
+    runReadConfigurationFile("/content/eMolFragTEMP/unittests/data/config-files/comment2.txt", ['!python', 'eMolFrag-2/src/eMolFrag.py', '-i', '/content/input', '-o', 'output/', '-p', '16', '-c', '1', ''])
+    runReadConfigurationFile("/content/eMolFragTEMP/unittests/data/config-files/comment3.txt", ['!python', 'eMolFrag-2/src/eMolFrag.py', '-i', '/content/input', '-o', 'output/', '-p', '16', '-c', '1\n\n'])
+    runReadConfigurationFile("/content/eMolFragTEMP/unittests/data/config-files/comment4.txt", [''])
+    runReadConfigurationFile("/content/eMolFragTEMP/unittests/data/config-files/normal1.txt",  ['!python', 'eMolFrag-2/src/eMolFrag.py', '-i', '/content/input', '-o', 'output/', '-p', '16', '-c', '1'])
+    runReadConfigurationFile("/content/eMolFragTEMP/unittests/data/config-files/normal2.txt",  ['!python', 'eMolFrag-2/src/eMolFrag.py', '-i', '/content/input', '-o', 'output/', '-p', '0', '-c', '0'])
 
 def runReadConfigurationInput(arguments, expec_result):
     initializer = Options()
@@ -35,7 +38,7 @@ def runReadConfigurationInputTests():
 # Unit test initiation functionality
 #
 #
-def runtest(func):
+def runtest1(func):
 
     try:
        func()
@@ -46,27 +49,27 @@ def runtest(func):
 
 
 def runtest(test_name, test_func, successful, failed):
-    if runtest(test_func):
+    if runtest1(test_func):
         successful.append(test_name)
     else:
         failed.append(test_name)
 
 def runtests():
     printlevel = 1
-    utilities.emit(f"Executing {__name__} unit tests.")
+    utilities.emit(printlevel, f"Executing {__name__} unit tests.")
     
     #
     # Define all tests as a Dictionary: {str-name, <function-to-execute>}
     #
-    tests = {"readCommandLine": runReadCommandLineTests, "readConfigurationFile": runReadConfigurationFileTests, "readConfigurationInput": runReadConfigurationInputTests
-            }
+    tests = {"readCommandLine": runReadCommandLineTests, "readConfigurationFile": runReadConfigurationFileTests, "readConfigurationInput": runReadConfigurationInputTests}
 
     #
     # Run
     #
     successful = []
     failed = []
-    for (test_name, test_func) in tests:
+    for test_name, test_func in tests.items():
+        print(f"Running {test_name}...")
         runtest(test_name, test_func, successful, failed)
 
     # 

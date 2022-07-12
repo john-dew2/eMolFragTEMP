@@ -63,18 +63,18 @@ class Options:
             
             self.PARALLEL_CORES_USED = option
             
-        if (argType == "-m"):
-            option = int(option)
-            #throw error
-            if ((option > 2) or (option < 0)):
-                self.paramErr(argType, option, 0, 2)
-                
-            if (option == 0):
-                self.FULL_PROCESS = True
-            if (option == 1):
-                self.CHOP_ONLY = True
-            if (option == 2):
-                self.CHOP_AND_REMOVE = True
+        #if (argType == "-m"):
+        #    option = int(option)
+        #    #throw error
+        #    if ((option > 2) or (option < 0)):
+        #        self.paramErr(argType, option, 0, 2)
+        #        
+        #    if (option == 0):
+        #        self.FULL_PROCESS = True
+        #    if (option == 1):
+        #        self.CHOP_ONLY = True
+        #    if (option == 2):
+        #        self.CHOP_AND_REMOVE = True
                 
         if (argType == "-c"):
             option = int(option)
