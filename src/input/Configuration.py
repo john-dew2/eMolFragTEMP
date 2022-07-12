@@ -29,6 +29,10 @@ def readConfigurationFile(config_file):
 # Reads a command line and set options to correct values
 #
 def readCommandLine(initializer, arguments):
+    if (arguments == None):
+      print(f"Arguments were empty")
+      return False
+
     argTypes = ["-i","-o","-p","-m","-c"]
     
     #parse through each argument and send them into the handler
@@ -46,18 +50,13 @@ def readConfigurationInput(initializer, arguments):
     requiredTypes = ["-i", "-o"]
 
     #if length is 1, then no arguments wer eprovided
-    if (len(arg) <= 1):
+    if (len(arg) < 2):
         print(f"No arguments we're provided")
         return False
 
     #if length is 2, then only one argument was provided, meaning the only argument is a file
     if (len(arg) == 2):
         arg = readConfigurationFile(arg[1])
-
-    #after a file can be read, check if we have an accurate amount of arguments
-    if (len(arg) <= 4):
-      print(f"Too few command arguments") 
-      return False
 
     #if there is no "-i" or "-o", throw an error
     if not(all(x in arg for x in requiredTypes)):
