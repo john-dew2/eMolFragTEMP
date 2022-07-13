@@ -12,7 +12,7 @@ def acquireMoleculeFiles(initializer):
 
     if not folderPath.exists():
         print(f'Input path {initializer.INPUT_PATH} does not exist.')
-        return
+        return None
     
     # initialize two lists; one with the full path of a file and one with the file names
     files = []
@@ -31,10 +31,8 @@ def acquireMoleculeFiles(initializer):
             files.append(Path(initializer.INPUT_PATH + "/" + current_file.name))
             
     if bad_files:
-        #print()
-        print("bad file")
-        #print(f"[Error] emolFrag 2.0 only accepts the following formats {', '.join(constants.ACCEPTED_FORMATS)}")
-        #print(f"The following files will be ignored:\n\t{'  '.join(bad_files)}")
+        print(f"[Error] emolFrag 2.0 only accepts the following formats {', '.join(constants.ACCEPTED_FORMATS)}")
+        print(f"The following files will be ignored:\n\t{'  '.join(bad_files)}")
             
     return files
 

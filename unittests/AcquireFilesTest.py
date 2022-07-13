@@ -1,15 +1,33 @@
 import sys
 from pathlib import Path
 from eMolFrag2.unittests import utilities
-from eMolFrag2.src.input import Configuration, Options
+from eMolFrag2.src.input import AcquireFiles, Configuration, Options
 
 def runAcquireMoleculeFilesTests():
+    cwd = (Path.cwd()).joinpath(data)
+    mol2 = cwd.joinpath(mol2)
+    smi = cwd.joinpath(smi)
+    sdf = cwd.joinpath(sdf)
+    
+    testPaths = [mol2, smi]
+    for filePath in testPaths:
+        arguments = f"!python -m eMolFragTEMP.src.eMolFrag -i {filePath} -o output/"
+        runAcquireMoleculeFiles(arguments)
+        
+    runAcquireMoleculeFiles(f"!python -m eMolFragTEMP.src.eMolFrag -i {sdf} -o output/")
 
-def runAcquireMoleculeFiles():
-
+def runAcquireMoleculeFiles(arguments, expec):
+    initializer = Options()
+    initializer.readConfigurationInput(initializer, arguments)
+    files = AcquireFiles.acquireMoleculeFiles(initializer)
+    assert files != None
+    
 def runAcquireConfigurationFileTests():
 
-def runAcquireConfigurationFile():
+def runAcquireConfigurationFile(file, expec):
+    files = AcquireFiles.acquireConfigurationFile(file)
+    assert files == file
+    
 
 
 
