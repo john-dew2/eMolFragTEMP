@@ -1,33 +1,40 @@
 import sys
 from pathlib import Path
-from eMolFrag2.unittests import utilities
-from eMolFrag2.src.input import AcquireFiles, Configuration, Options
+from eMolFragTEMP.unittests import utilities
+from eMolFragTEMP.src.input import AcquireFiles, Configuration, Options
+
+usr_dir = Path.cwd()
+dataPath = usr_dir.joinpath("eMolFragTEMP/unittests/data/db-files")
+mol2 = dataPath.joinpath("mol2")
+smi = dataPath.joinpath("smi")
+sdf = dataPath.joinpath("sdf")
 
 def runAcquireMoleculeFilesTests():
-    cwd = (Path.cwd()).joinpath(data)
-    mol2 = cwd.joinpath(mol2)
-    smi = cwd.joinpath(smi)
-    sdf = cwd.joinpath(sdf)
     
     testPaths = [mol2, smi]
     for filePath in testPaths:
-        arguments = f"!python -m eMolFragTEMP.src.eMolFrag -i {filePath} -o output/"
-        runAcquireMoleculeFiles(arguments)
+        runAcquireMoleculeFiles(f"-m eMolFragTEMP.src.eMolFrag -i {filePath} -o output/".split(" "), 5)
+    runAcquireMoleculeFiles(f"-m eMolFragTEMP.src.eMolFrag -i {sdf} -o output/".split(" "), 0)
+    runAcquireMoleculeFiles(f"-m eMolFragTEMP.src.eMolFrag -i directory/doesnt/exist -o output/".split(" "), 0)
         
-    runAcquireMoleculeFiles(f"!python -m eMolFragTEMP.src.eMolFrag -i {sdf} -o output/")
-
 def runAcquireMoleculeFiles(arguments, expec):
-    initializer = Options()
-    initializer.readConfigurationInput(initializer, arguments)
+    initializer = Options.Options()
+    initializer = Configuration.readConfigurationInput(initializer, arguments)
     files = AcquireFiles.acquireMoleculeFiles(initializer)
-    assert files != None
+    if (files == None): files = []
+    assert len(files) == expec
     
 def runAcquireConfigurationFileTests():
+    runAcquireConfigurationFile(mol2.joinpath("DB00607.mol2"), mol2.joinpath("DB00607.mol2"))
+    runAcquireConfigurationFile(smi.joinpath("DB00607.smi"), smi.joinpath("DB00607.smi"))
+    runAcquireConfigurationFile(sdf.joinpath("DB00607.sdf"), sdf.joinpath("DB00607.sdf"))
+    runAcquireConfigurationFile(mol2.joinpath("DB12345.mol2"), None)
 
-def runAcquireConfigurationFile(file, expec):
-    files = AcquireFiles.acquireConfigurationFile(file)
-    assert files == file
-    
+def runAcquireConfigurationFile(org_file, expec):
+    processed_file = AcquireFiles.acquireConfigurationFile(org_file)
+    assert processed_file == expec
+
+ 
 
 
 
