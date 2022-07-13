@@ -31,7 +31,7 @@ def convertToRDkit(contents, extension):
     if (extension == ".mol"):
         return Chem.MolFromMolBlock(contents)
 
-    if (extension == ".pbd"):
+    if (extension == ".pdb"):
         return Chem.MolFromPDBBlock(contents)
 
     if (extension == ".sma"):

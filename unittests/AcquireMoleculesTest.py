@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
-from eMolFrag2.unittests import utilities
-from eMolFrag2.src.input import AcquireMolecules, AcquireFiles, Configuration, Options
+from eMolFragTEMP.unittests import utilities
+from eMolFragTEMP.src.input import AcquireMolecules, AcquireFiles, Configuration, Options
 
 usr_dir = Path.cwd()
 dataPath = usr_dir.joinpath("eMolFragTEMP/unittests/data/db-files")
@@ -9,22 +9,23 @@ mol2 = dataPath.joinpath("mol2")
 smi = dataPath.joinpath("smi")
 sdf = dataPath.joinpath("sdf")
 
-def runAcquireMoleculeTests():
+def runAcquireMoleculesTests():
     
     testPaths = [mol2, smi]
     for filePath in testPaths:
         arguments = f"!python -m eMolFragTEMP.src.eMolFrag -i {filePath} -o output/"
         files = getListofFiles(arguments)
-        runAcquireMolecule(files)
+        runAcquireMolecules(files, len(files))
+    runAcquireMolecules(getListofFiles(f"!python -m eMolFragTEMP.src.eMolFrag -i {sdf} -o output/"), 0)
 
 def getListofFiles(args):
     initializer = Options.Options()
     initializer = Configuration.readConfigurationInput(initializer, args)
     return AcquireFiles.acquireMoleculeFiles(initializer)
 
-def runAcquireMolecule(files):
+def runAcquireMolecules(files, expec):
     retFiles = AcquireMolecules.acquireMolecules(files)
-    assert len(files) == len(retFiles)
+    assert len(retFiles) == expec
 
 #
 #

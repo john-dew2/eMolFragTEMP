@@ -17,7 +17,7 @@ def main():
     #Input System
     files = AcquireFiles.acquireMoleculeFiles(initializer)
     dataset = AcquireMolecules.acquireMolecules(files)
-    print(len(dataset))
+    print("Amount of Molecules:", len(dataset))
     #Process
     
     #Post-Process
