@@ -1,5 +1,5 @@
 #Options.py
-
+from eMolFragTEMP.unittests import utilities
 
 #input_path
 #output_path
@@ -43,7 +43,7 @@ class Options:
     # Prints when there's an error with inputs pertaining to -p -m or -c    
     #
     def paramErr(self, argType, option, lower, upper):
-        print(f"[Error] {argType} expects values between {lower}-{upper} inclusive; your input: {option}")
+        utilities.emit(0, f"[Error] {argType} expects values between {lower}-{upper} inclusive; your input: {option}")
     
     #
     # Given an options preference, function sets an option to its correct value
@@ -52,7 +52,7 @@ class Options:
     
         argTypes = ["-i","-o","-p","-m","-c"]
         if option in argType:
-            print(f"Can't have a {option} argument follow a {argType} argument")
+            utilities.emit(0,f"Can't have a {option} argument follow a {argType} argument")
             return
     
         if (argType == "-i"):   
@@ -98,4 +98,4 @@ class Options:
                 self.REMOVE_LOG_FILES = False
         
         else:
-            print(f"[Error] {argType} does not exist")
+            utilities.emit(0, f"[Error] {argType} does not exist")
