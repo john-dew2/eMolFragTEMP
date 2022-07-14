@@ -21,7 +21,7 @@ class Options:
         self.FULL_PROCESS = False
         self.CHOP_ONLY = False
         self.CHOP_AND_REMOVE = False
-        #self.TRADITIONAL_FORMAT  = False
+        self.TRADITIONAL_FORMAT  = False
         self.DIFFERENT_FILES  = False
         self.REMOVE_LOG_FILES  = False
 
@@ -49,13 +49,19 @@ class Options:
     # Given an options preference, function sets an option to its correct value
     #
     def setOption(self, argType, option):
+    
+        argTypes = ["-i","-o","-p","-m","-c"]
+        if option in argType:
+            print(f"Can't have a {option} argument follow a {argType} argument")
+            return
+    
         if (argType == "-i"):   
             self.INPUT_PATH = option
             
-        if (argType == "-o"):
+        elif (argType == "-o"):
             self.OUTPUT_PATH = option
             
-        if (argType == "-p"):
+        elif (argType == "-p"):
             option = int(option)
             #throw error
             if ((option > 16) or (option < 0)):
@@ -76,7 +82,7 @@ class Options:
         #    if (option == 2):
         #        self.CHOP_AND_REMOVE = True
                 
-        if (argType == "-c"):
+        elif (argType == "-c"):
             option = int(option)
             #throw error
             if ((option > 2) or (option < 0)):
@@ -90,4 +96,6 @@ class Options:
             if (option == 2):
                 self.DIFFERENT_FILES = True
                 self.REMOVE_LOG_FILES = False
-              
+        
+        else:
+            print(f"[Error] {argType} does not exist")

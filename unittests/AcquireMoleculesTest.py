@@ -12,10 +12,13 @@ sdf = dataPath.joinpath("sdf")
 def runAcquireMoleculesTests():
     
     testPaths = [mol2, smi]
+    #Tests if mol2 and smi are taken
     for filePath in testPaths:
         arguments = f"!python -m eMolFragTEMP.src.eMolFrag -i {filePath} -o output/"
         files = getListofFiles(arguments)
         runAcquireMolecules(files, len(files))
+        
+    #Will recognize the files as bad
     runAcquireMolecules(getListofFiles(f"!python -m eMolFragTEMP.src.eMolFrag -i {sdf} -o output/"), 0)
 
 def getListofFiles(args):

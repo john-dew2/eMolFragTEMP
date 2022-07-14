@@ -12,7 +12,11 @@ def readConfigurationFile(config_file):
     #read the lines
     with open(path) as f:
         lines = f.readlines()
-        
+    
+    if (lines == None):
+        print(f"file {path.name} is empty")
+        return None
+    
     #concatenate the contents and ignore comments
     position = 0
     for line in lines:

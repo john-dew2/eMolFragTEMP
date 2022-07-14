@@ -8,13 +8,17 @@ dataPath = usr_dir.joinpath("eMolFragTEMP/unittests/data/db-files")
 mol2 = dataPath.joinpath("mol2")
 smi = dataPath.joinpath("smi")
 sdf = dataPath.joinpath("sdf")
+config = usr_dir.joinpath("/content/eMolFragTEMP/unittests/data/config-files")
 
 def runAcquireMoleculeFilesTests():
     
     testPaths = [mol2, smi]
+    #Tests if mol2 and smi are taken
     for filePath in testPaths:
         runAcquireMoleculeFiles(f"-m eMolFragTEMP.src.eMolFrag -i {filePath} -o output/".split(" "), 5)
+    #Will recognize the files as bad
     runAcquireMoleculeFiles(f"-m eMolFragTEMP.src.eMolFrag -i {sdf} -o output/".split(" "), 0)
+    #File does not exist
     runAcquireMoleculeFiles(f"-m eMolFragTEMP.src.eMolFrag -i directory/doesnt/exist -o output/".split(" "), 0)
         
 def runAcquireMoleculeFiles(arguments, expec):
@@ -25,10 +29,9 @@ def runAcquireMoleculeFiles(arguments, expec):
     assert len(files) == expec
     
 def runAcquireConfigurationFileTests():
-    runAcquireConfigurationFile(mol2.joinpath("DB00607.mol2"), mol2.joinpath("DB00607.mol2"))
-    runAcquireConfigurationFile(smi.joinpath("DB00607.smi"), smi.joinpath("DB00607.smi"))
-    runAcquireConfigurationFile(sdf.joinpath("DB00607.sdf"), sdf.joinpath("DB00607.sdf"))
-    runAcquireConfigurationFile(mol2.joinpath("DB12345.mol2"), None)
+    runAcquireConfigurationFile(config.joinpath("comment1.txt"), config.joinpath("comment1.txt"))
+    runAcquireConfigurationFile(config.joinpath("normal1.txt"), config.joinpath("normal1.txt"))
+    runAcquireConfigurationFile(mol2.joinpath("no.txt"), None)
 
 def runAcquireConfigurationFile(org_file, expec):
     processed_file = AcquireFiles.acquireConfigurationFile(org_file)

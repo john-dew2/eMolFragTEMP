@@ -17,7 +17,6 @@ def fileToString(file):
 def convertToRDkit(contents, extension):
     Chem.doKekule = False
 
-    
     if (extension == constants.FASTA_FORMAT_EXT):
         return Chem.MolFromFASTA(contents) 
 
@@ -58,12 +57,8 @@ def acquireMolecules(files):
           molecule = convertToRDkit(file_contents, extension)
       except:
           print(f"RDKit failed to read {current_file.name}")
-              
-      #if the molecule didnt process let the user know
-      #if (molecule == None):
-      #    print(f"[Error] RDKit failed to convert {current_file.name} to a RDKit object.")
 
-      #otherwise add it to our dataset and update the filenames we have
+      #add it to our dataset and update the filenames we have
       else:
           molObject = Molecule.Molecule(molecule, current_file.name)
           data.append(molObject)
