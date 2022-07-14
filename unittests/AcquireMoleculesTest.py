@@ -8,10 +8,12 @@ dataPath = usr_dir.joinpath("eMolFragTEMP/unittests/data/db-files")
 mol2 = dataPath.joinpath("mol2")
 smi = dataPath.joinpath("smi")
 sdf = dataPath.joinpath("sdf")
+pdb = dataPath.joinpath("pdb")
+mol = dataPath.joinpath("mol")
 
 def runAcquireMoleculesTests():
     
-    testPaths = [mol2, smi]
+    testPaths = [mol2, smi, pdb, mol]
     #Tests if mol2 and smi are taken
     for filePath in testPaths:
         arguments = f"!python -m eMolFragTEMP.src.eMolFrag -i {filePath} -o output/"
