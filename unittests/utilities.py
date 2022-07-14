@@ -58,7 +58,9 @@ def getRDKitMolecule(path):
 #
 # 
 def emit(level, s):
-    print("  " * level + s)
+    debug = True
+    if debug:
+      print("  " * level + s)
     
 def emitError(level, s):
     print("  " * level + "Error:", s)

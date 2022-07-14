@@ -17,8 +17,9 @@ def runReadCommandLine(arguments, expec_result):
     assert result == expec_result
 
 def runReadCommandLineTests():
+    
     #Normal
-    runReadCommandLine("-m eMolFragTEMP.src.eMolFrag -i {usr_dir.joinpath('eMolFragTEMP/test/mol2-test')} -o output/ -p 16 -c 1".split(" "), True)
+    runReadCommandLine("-m eMolFragTEMP.src.eMolFrag -i {usr_dir.joinpath('eMolFragTEMP/unittests/data/db-files/mol2')} -o output/ -p 16 -c 1".split(" "), True)
     
     #Empty
     runReadCommandLine(None, False)
@@ -51,7 +52,6 @@ def runReadConfigurationInput(arguments, expec_result):
     assert result == expec_result
 
 def runReadConfigurationInputTests():
-    pass
     #Normal processing
     runReadConfigurationInput(f"-m eMolFragTEMP.src.eMolFrag -i {usr_dir.joinpath('eMolFragTEMP/unittests/data/db-files/mol2')} -o output/ -p 16 -c 1".split(" "), True)
     runReadConfigurationInput(f"-m eMolFragTEMP.src.eMolFrag -i {usr_dir.joinpath('eMolFragTEMP/unittests/data/db-files/smi')} -o output/".split(" "), True)
