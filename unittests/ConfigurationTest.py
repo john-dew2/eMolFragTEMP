@@ -6,9 +6,9 @@ from eMolFragTEMP.unittests import utilities
 from eMolFragTEMP.src.input import Configuration, Options
 
 usr_dir = Path.cwd()
-config_files = usr_dir.joinpath("eMolFrag2/unittests/data/config-files")
+config_files = usr_dir.joinpath("eMolFragTEMP/unittests/data/config-files")
 
-dataPath = usr_dir.joinpath("eMolFrag2/unittests/data/db-files")
+dataPath = usr_dir.joinpath("eMolFragTEMP/unittests/data/db-files")
 mol2 = dataPath.joinpath("mol2")
 smi = dataPath.joinpath("smi")
 sdf = dataPath.joinpath("sdf")
@@ -27,18 +27,10 @@ def createParser(arguments):
   type=str,
   help='Set the output path')
   
-  #parser.add_argument("-m",
-  #type=int, choices=range(0,3),
-  #help='Set the execution type')
-  
   parser.add_argument("-c",
   type=int, choices=range(0,3),
   help='Set the output type')
-  
-  
-  #print("pass")
-  args = parser.parse_args(arguments)
-  print(args)
+
   return parser.parse_args(arguments)
 
 def runReadCommandLine(arguments, expec_result):
@@ -52,35 +44,33 @@ def runReadCommandLine(arguments, expec_result):
     assert result == expec_result
 
 def runReadCommandLineTests():
-    print("yuh")
     #Normal
-    #runReadCommandLine(f"-i {mol2} -o output/ -c 1".split(" "), True)
+    runReadCommandLine(f"-i {mol2} -o output/ -c 1".split(" "), True)
     
     #Empty
-    #runReadCommandLine(None, False)
-    
-    
+    runReadCommandLine(None, False)
+     
 def runReadConfigurationFile(config_file, expec_result):
   assert Configuration.readConfigurationFile(config_file) == expec_result
 
 def runReadConfigurationFileTests():
-    print("yuh")
     #Files with a comment
-    runReadConfigurationFile(config_files.joinpath("comment1.txt"), ['\n!python', '-m', 'eMolFragTEMP.src.eMolFrag', '-i', '/content/eMolFragTEMP/test/mol2-test', '-o', 'output/', '-p', '16', '-c', '1'])
-    runReadConfigurationFile(config_files.joinpath("comment2.txt"), ['!python', '-m', 'eMolFragTEMP.src.eMolFrag', '-i', '/content/eMolFragTEMP/test/mol2-test', '-o', 'output/', '-p', '16', '-c', '1', ''])
-    runReadConfigurationFile(config_files.joinpath("comment3.txt"), ['!python',  '-m', 'eMolFragTEMP.src.eMolFrag', '-i', '/content/eMolFragTEMP/test/mol2-test', '-o', 'output/', '-p', '16', '-c', '1\n\n'])
+    runReadConfigurationFile(config_files.joinpath("comment1.txt"), ['-i', '/content/eMolFragTEMP/test/mol2-test', '-o', 'output/', '-c', '1'])
+    runReadConfigurationFile(config_files.joinpath("comment2.txt"), ['-i', '/content/eMolFragTEMP/test/mol2-test', '-o', 'output/', '-c', '1'])
+    #runReadConfigurationFile(config_files.joinpath("comment3.txt"), ['-i', '/content/eMolFragTEMP/test/mol2-test', '-o', 'output/', '-c', '1'])
     runReadConfigurationFile(config_files.joinpath("comment4.txt"), [''])
 
     #Normal Files
-    runReadConfigurationFile(config_files.joinpath("normal1.txt"),  ['!python',  '-m', 'eMolFragTEMP.src.eMolFrag', '-i', '/content/eMolFragTEMP/test/mol2-test', '-o', 'output/', '-p', '16', '-c', '1'])
-    runReadConfigurationFile(config_files.joinpath("normal2.txt"),  ['!python', '-m', 'eMolFragTEMP.src.eMolFrag', '-i', '/content/eMolFragTEMP/test/mol2-test', '-o', 'output/', '-p', '0', '-c', '0'])
+    runReadConfigurationFile(config_files.joinpath("normal1.txt"),  ['-i', '/content/eMolFragTEMP/test/mol2-test', '-o', 'output/', '-c', '1'])
+    runReadConfigurationFile(config_files.joinpath("normal2.txt"),  ['-i', '/content/eMolFragTEMP/test/mol2-test', '-o', 'output/', '-c', '0'])
 
     #Empty File
     runReadConfigurationFile(config_files.joinpath("empty1.txt"), [])
 
 def runReadConfigurationInput(arguments, expec_result):
+    arg = createParser(arguments)
     initializer = Options.Options()
-    initializer = Configuration.readConfigurationInput(initializer, arguments)
+    initializer = Configuration.readConfigurationInput(initializer, arg)
     if (initializer != None):
       result = True
     else:
@@ -88,28 +78,26 @@ def runReadConfigurationInput(arguments, expec_result):
     assert result == expec_result
 
 def runReadConfigurationInputTests():
-    print("yuh")
     #Normal processing
-    #runReadConfigurationInput(f"-m eMolFrag2.src.eMolFrag -i {mol2} -o output/ -p 16 -c 1".split(" "), True)
-    #runReadConfigurationInput(f"-m eMolFrag2.src.eMolFrag -i {smi} -o output/".split(" "), True)
+    runReadConfigurationInput(f"-i {mol2} -o output/ -c 1".split(" "), True)
+    runReadConfigurationInput(f"-i {smi} -o output/".split(" "), True)
     
     #No input or output
-    #runReadConfigurationInput(f"-m eMolFrag2.src.eMolFrag -o output/ -p 16 -c 1".split(" "), False)
-    #runReadConfigurationInput(f"-m eMolFrag2.src.eMolFrag -i {smi} -p 16 -c 1".split(" "), False)
-    #runReadConfigurationInput(f"-m eMolFrag2.src.eMolFrag -p 16 -c 1".split(" "), False)
+    runReadConfigurationInput(f"-o output/ -c 1".split(" "), False)
+    runReadConfigurationInput(f"-i {smi} -c 1".split(" "), False)
+    runReadConfigurationInput(f"-c 1".split(" "), False)
     
     #Not enough arguments 
-    #runReadConfigurationInput(f"!python".split(" "), False)
+    #runReadConfigurationInput(f"".split(" "), False)
     
     #Files only
-        #Files only
-    #runReadConfigurationInput(f"-m {config_files.joinpath('comment1.txt')}".split(" "), True)
-    #runReadConfigurationInput(f"-m {config_files.joinpath('comment2.txt')}".split(" "), True)
-    #runReadConfigurationInput(f"-m {config_files.joinpath('comment3.txt')}".split(" "), True)
-    #runReadConfigurationInput(f"-m {config_files.joinpath('comment4.txt')}".split(" "), False)
-    #runReadConfigurationInput(f"-m {config_files.joinpath('empty1.txt')}".split(" "), False)
-    #runReadConfigurationInput(f"-m {config_files.joinpath('normal1.txt')}".split(" "), True)
-    #runReadConfigurationInput(f"-m {config_files.joinpath('normal2.txt')}".split(" "), True)
+    runReadConfigurationInput(f"-i {config_files.joinpath('comment1.txt')}".split(" "), True)
+    runReadConfigurationInput(f"-i {config_files.joinpath('comment2.txt')}".split(" "), True)
+    runReadConfigurationInput(f"-i {config_files.joinpath('comment3.txt')}".split(" "), True)
+    runReadConfigurationInput(f"-i {config_files.joinpath('comment4.txt')}".split(" "), False)
+    runReadConfigurationInput(f"-i {config_files.joinpath('empty1.txt')}".split(" "), False)
+    runReadConfigurationInput(f"-i {config_files.joinpath('normal1.txt')}".split(" "), True)
+    runReadConfigurationInput(f"-i {config_files.joinpath('normal2.txt')}".split(" "), True)
 #
 #
 # Unit test initiation functionality

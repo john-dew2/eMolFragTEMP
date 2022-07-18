@@ -2,7 +2,32 @@ from pathlib import Path
 from eMolFragTEMP.src.input import AcquireFiles
 from eMolFragTEMP.unittests import utilities
 
+def createParser():
+    from argparse import ArgumentParser
+    parser = ArgumentParser(description='eMolFrag2')
+    parser.add_argument("-i",
+    type=str,
+    help='Set the input path')
+  
+    parser.add_argument("-o",
+    type=str,
+    help='Set the output path')
+  
+    parser.add_argument("-m",
+    type=int, choices=range(0,3),
+    help='Set the execution type')
+  
+    parser.add_argument("-c",
+    type=int, choices=range(0,3),
+    help='Set the output type')
 
+    return parser
+
+def checkRequirements(arg):
+  if ((arg.i == None) or (arg.o == None)):
+    print(f"Every command must iclude '-i' and '-o'")
+    return False
+  return True
 #
 # Acquires and reads a configuration file and returns the command line arguments nested in the file
 #
@@ -37,17 +62,9 @@ def readConfigurationFile(config_file):
 #
 def readCommandLine(initializer, arguments):
     if (arguments == None):
-      #print(f"Arguments were empty")
       utilities.emit(0, f"Arguments were empty")
       return None
 
-    #argTypes = ["-i","-o","-p","-m","-c"]
-    
-    #parse through each argument and send them into the handler
-    #for i in range(len(arguments)):
-      #  print(arguments[i])
-       # if (arguments[i] in argTypes):
-        #    initializer.setOption(arguments[i], arguments[i + 1])
     initializer.setOptions(arguments)
 
     return initializer
@@ -57,29 +74,22 @@ def readCommandLine(initializer, arguments):
 #
 def readConfigurationInput(initializer, arguments):
     arg = arguments
-    requiredTypes = ["-i", "-o"]
 
-    #if length is 1, then no arguments wer eprovided
-    #if (len(arg) < 2):
-    #    #print(f"No arguments we're provided")
-    #    utilities.emit(0, f"No arguments we're provided")
-    #    return None
+    if (arg.i == None):
+      utilities.emit(0, f"No input was provided")
+      return None
 
-    #if length is 2, then only one argument was provided, meaning the only argument is a file
-    #if (len(arg) == 2):
     inPath = Path(arg.i)
     try:
         if (inPath.suffix == ".txt"):
-          arg = readConfigurationFile(arg.i)
+          retArg = readConfigurationFile(arg.i)
+          parser = createParser()
+          arg = parser.parse_args(retArg)
     except:
         pass
-    #arg = readConfigurationFile(arg[1])
-
-    #if there is no "-i" or "-o", throw an error
-    #if not(all(x in arg for x in requiredTypes)):
-      #print(f"Every command must iclude '-i' and '-o'")
-      #utilities.emit(0, f"Every command must iclude '-i' and '-o'")
-      #return None
+    
+    if not(checkRequirements(arg)):
+      return None
 
     #otherwise read the command line arguments provided
     readCommandLine(initializer, arg)

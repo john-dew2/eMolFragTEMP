@@ -1,3 +1,2 @@
 #Comment
-
 -i /content/eMolFragTEMP/test/mol2-test -o output/ -c 1
