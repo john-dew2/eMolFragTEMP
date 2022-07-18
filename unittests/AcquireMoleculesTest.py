@@ -22,7 +22,6 @@ def runAcquireMoleculesTests():
     runAcquireMolecules(getListofFiles(f"-i {sdf} -o output/".split(" ")), 0)
 
 def getListofFiles(arguments):
-    print(arguments)
     arg = utilities.createParser(arguments)
     initializer = Options.Options()
     initializer = Configuration.readConfigurationInput(initializer, arg)

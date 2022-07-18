@@ -25,7 +25,7 @@ def createParser():
 
 def checkRequirements(arg):
   if ((arg.i == None) or (arg.o == None)):
-    print(f"Every command must iclude '-i' and '-o'")
+    utilities.emit(0, f"Every command must iclude '-i' and '-o'")
     return False
   return True
 #
@@ -41,7 +41,6 @@ def readConfigurationFile(config_file):
         lines = f.readlines()
 
     if (len(lines) <= 0):
-        #print(f"file {path.name} is empty")
         utilities.emit(0, f"file {path.name} is empty")
         return []
     

@@ -31,7 +31,6 @@ def runReadCommandLineTests():
     runReadCommandLine(None, False)
      
 def runReadConfigurationFile(config_file, expec_result):
-  print(Configuration.readConfigurationFile(config_file))
   assert Configuration.readConfigurationFile(config_file) == expec_result
 
 def runReadConfigurationFileTests():
