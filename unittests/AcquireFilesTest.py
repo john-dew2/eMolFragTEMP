@@ -15,15 +15,16 @@ def runAcquireMoleculeFilesTests():
     testPaths = [mol2, smi]
     #Tests if mol2 and smi are taken
     for filePath in testPaths:
-        runAcquireMoleculeFiles(f"-m eMolFragTEMP.src.eMolFrag -i {filePath} -o output/".split(" "), 5)
+        runAcquireMoleculeFiles(f"-i {filePath} -o output/".split(" "), 5)
     #Will recognize the files as bad
-    runAcquireMoleculeFiles(f"-m eMolFragTEMP.src.eMolFrag -i {sdf} -o output/".split(" "), 0)
+    runAcquireMoleculeFiles(f"-i {sdf} -o output/".split(" "), 0)
     #File does not exist
-    runAcquireMoleculeFiles(f"-m eMolFragTEMP.src.eMolFrag -i directory/doesnt/exist -o output/".split(" "), 0)
+    runAcquireMoleculeFiles(f"-i directory/doesnt/exist -o output/".split(" "), 0)
         
 def runAcquireMoleculeFiles(arguments, expec):
+    arg = utilities.createParser(arguments) 
     initializer = Options.Options()
-    initializer = Configuration.readConfigurationInput(initializer, arguments)
+    initializer = Configuration.readConfigurationInput(initializer, arg)
     files = AcquireFiles.acquireMoleculeFiles(initializer)
     if (files == None): files = []
     assert len(files) == expec

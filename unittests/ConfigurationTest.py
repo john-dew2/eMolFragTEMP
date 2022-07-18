@@ -13,28 +13,8 @@ mol2 = dataPath.joinpath("mol2")
 smi = dataPath.joinpath("smi")
 sdf = dataPath.joinpath("sdf")
 
-def createParser(arguments):
-  if (arguments == None):
-    return None
-
-  from argparse import ArgumentParser
-  parser = ArgumentParser(description='eMolFrag2')
-  parser.add_argument("-i",
-  type=str,
-  help='Set the input path')
-  
-  parser.add_argument("-o",
-  type=str,
-  help='Set the output path')
-  
-  parser.add_argument("-c",
-  type=int, choices=range(0,3),
-  help='Set the output type')
-
-  return parser.parse_args(arguments)
-
 def runReadCommandLine(arguments, expec_result):
-    arg = createParser(arguments)
+    arg = utilities.createParser(arguments)
     initializer = Options.Options()
     initializer = Configuration.readCommandLine(initializer, arg)
     if (initializer != None):
@@ -51,6 +31,7 @@ def runReadCommandLineTests():
     runReadCommandLine(None, False)
      
 def runReadConfigurationFile(config_file, expec_result):
+  print(Configuration.readConfigurationFile(config_file))
   assert Configuration.readConfigurationFile(config_file) == expec_result
 
 def runReadConfigurationFileTests():
@@ -68,7 +49,7 @@ def runReadConfigurationFileTests():
     runReadConfigurationFile(config_files.joinpath("empty1.txt"), [])
 
 def runReadConfigurationInput(arguments, expec_result):
-    arg = createParser(arguments)
+    arg = utilities.createParser(arguments)
     initializer = Options.Options()
     initializer = Configuration.readConfigurationInput(initializer, arg)
     if (initializer != None):

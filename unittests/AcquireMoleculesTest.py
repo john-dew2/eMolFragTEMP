@@ -8,24 +8,24 @@ dataPath = usr_dir.joinpath("eMolFragTEMP/unittests/data/db-files")
 mol2 = dataPath.joinpath("mol2")
 smi = dataPath.joinpath("smi")
 sdf = dataPath.joinpath("sdf")
-pdb = dataPath.joinpath("pdb")
+pdb = dataPath.joinpath("pbd")
 mol = dataPath.joinpath("mol")
 
 def runAcquireMoleculesTests():
-    
+
     testPaths = [mol2, smi, pdb, mol]
     #Tests if mol2 and smi are taken
     for filePath in testPaths:
-        arguments = f"!python -m eMolFragTEMP.src.eMolFrag -i {filePath} -o output/"
-        files = getListofFiles(arguments)
-        runAcquireMolecules(files, len(files))
+        runAcquireMolecules(getListofFiles(f"-i {filePath} -o output/".split(" ")), 5)
         
     #Will recognize the files as bad
-    runAcquireMolecules(getListofFiles(f"!python -m eMolFragTEMP.src.eMolFrag -i {sdf} -o output/"), 0)
+    runAcquireMolecules(getListofFiles(f"-i {sdf} -o output/".split(" ")), 0)
 
-def getListofFiles(args):
+def getListofFiles(arguments):
+    print(arguments)
+    arg = utilities.createParser(arguments)
     initializer = Options.Options()
-    initializer = Configuration.readConfigurationInput(initializer, args)
+    initializer = Configuration.readConfigurationInput(initializer, arg)
     return AcquireFiles.acquireMoleculeFiles(initializer)
 
 def runAcquireMolecules(files, expec):
