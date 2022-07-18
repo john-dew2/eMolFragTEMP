@@ -1,1 +1,1 @@
-#!python -m eMolFragTEMP.src.eMolFrag -i /content/eMolFragTEMP/test/mol2-test -o output/ -p 16 -c 1
+#-i /content/eMolFragTEMP/test/mol2-test -o output/ -c 1

@@ -50,10 +50,10 @@ class Options:
     #
     def setOption(self, argType, option):
     
-        argTypes = ["-i","-o","-p","-m","-c"]
-        if option in argType:
-            utilities.emit(0,f"Can't have a {option} argument follow a {argType} argument")
-            return
+        #argTypes = ["-i","-o","-p","-m","-c"]
+        #if option in argType:
+            #utilities.emit(0,f"Can't have a {option} argument follow a {argType} argument")
+            #return
     
         if (argType == "-i"):   
             self.INPUT_PATH = option
@@ -99,3 +99,9 @@ class Options:
         
         else:
             utilities.emit(0, f"[Error] {argType} does not exist")
+
+    def setOptions(self, args):
+      self.setOption("-i", args.i)
+      self.setOption("-o", args.o)
+      #self.setOption("-m", args.m)
+      self.setOption("-c", args.c)
