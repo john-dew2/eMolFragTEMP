@@ -17,7 +17,6 @@ class Options:
     def __init__(self):
         self.INPUT_PATH = ""
         self.OUTPUT_PATH = ""
-        self.PARALLEL_CORES_USED = 0
         self.FULL_PROCESS = False
         self.CHOP_ONLY = False
         self.CHOP_AND_REMOVE = False
@@ -31,7 +30,6 @@ class Options:
     def printOptions(self):
         print(f"INPUT_PATH: {self.INPUT_PATH}")
         print(f"OUTPUT_PATH: {self.OUTPUT_PATH}")
-        print(f"PARALLEL_CORES_USED: {self.PARALLEL_CORES_USED}")
         print(f"FULL_PROCESS: {self.FULL_PROCESS}")
         print(f"CHOP_ONLY: {self.CHOP_ONLY}")
         print(f"CHOP_AND_REMOVE: {self.CHOP_AND_REMOVE}")
@@ -55,14 +53,6 @@ class Options:
             
         elif (argType == "-o"):
             self.OUTPUT_PATH = option
-            
-        elif (argType == "-p"):
-            option = int(option)
-            #throw error
-            if ((option > 16) or (option < 0)):
-                self.paramErr(argType, option, 0, 16)
-            
-            self.PARALLEL_CORES_USED = option
             
         #if (argType == "-m"):
         #    option = int(option)
