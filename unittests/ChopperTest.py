@@ -1,30 +1,44 @@
 from pathlib import Path
 
-import utilities
-import Chopper
+from eMolFragTEMP.unittests import utilities
+from eMolFragTEMP.src.chopper import Chopper
 
+usr_dir = Path.cwd()
+dblbond = usr_dir.joinpath("eMolFragTEMP/unittests/data/1098067-c2-c2-double-bond")
+dataPath = usr_dir.joinpath("eMolFragTEMP/unittests/data/db-files")
+mol2 = dataPath.joinpath("mol2")
+smi = dataPath.joinpath("smi")
+sdf = dataPath.joinpath("sdf")
+pdb = dataPath.joinpath("pbd")
+mol = dataPath.joinpath("mol")
 
-def runisBrick(filepath, expec_result):
+def runChop():
+  pass
 
-    mol = utilities.getRDKitMolecule(Path(filepath))
-    assert Chopper.isBrick(mol) == expec_result
+def runChopTests():
+  pass
+  #mol = utilities.getRDKitMolecule(mol2.joinpath("DB01060.mol2"))
+  #linker, bricks = Chopper.chop(mol)
+  #pass
 
-def runIsBrickTests():
-    
-    runisBrick("./data/1098067-c2-c2-double-bond/b-CHEMBL1098067.mol2-000.sdf", True)
-    runisBrick("./data/1098067-c2-c2-double-bond/b-CHEMBL1098067.mol2-001.sdf", True)        
-    runisBrick("./data/1098067-c2-c2-double-bond/b-CHEMBL1098067.mol2-002.sdf", True)
-    
-    runisBrick("./data/1098067-c2-c2-double-bond/1-CHEMBL1098067.mol2-000.sdf", False)
-    runisBrick("./data/1098067-c2-c2-double-bond/1-CHEMBL1098067.mol2-000.sdf", False)
-    runisBrick("./data/1098067-c2-c2-double-bond/1-CHEMBL1098067.mol2-000.sdf", False)
+def runProcessFragments():
+  pass
+
+def runProcessFragmentsTests():
+  pass
+
+def runChopAll():
+  pass
+
+def runChopAllTests():
+  pass
 
 #
 #
 # Unit test initiation functionality
 #
 #
-def runtest(func):
+def runtest1(func):
 
     try:
        func()
@@ -35,7 +49,7 @@ def runtest(func):
 
 def runtest(test_name, test_func, successful, failed):
 
-    if runtest(test_func):
+    if runtest1(test_func):
         successful.append(test_name)
     else:
         failed.append(test_name)
@@ -47,7 +61,7 @@ def runtests(printlevel):
     #
     # Define all tests as a Dictionary: {str-name, <function-to-execute>}
     #
-    tests = {"isBrick", runIsBrickTests; \
+    tests = {"chop": runChopTests, "chopall": runChopAllTests, "processFragments": runProcessFragmentsTests
             }
 
     #
@@ -55,7 +69,7 @@ def runtests(printlevel):
     #
     successful = []
     failed = []
-    for (test_name, test_func) in tests:
+    for (test_name, test_func) in tests.items():
         runtest(test_name, test_func, successful, failed)
 
     # 
@@ -69,4 +83,4 @@ def runtests(printlevel):
             utilities.emit(printlevel+1, f'Failed {test}.')
 
 if __name__ == "__main__":
-    runtests()
+    runtests(0)

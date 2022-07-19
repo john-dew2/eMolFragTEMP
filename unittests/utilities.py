@@ -6,10 +6,10 @@ from rdkit import Chem
 from pathlib import Path
 
 #takes the contents of a file and puts it in a string for processing
-def fileToString(file):
+def fileToString(path):
 
     contents = ""
-    with open(file) as f:
+    with open(path) as f:
         contents = f.read()
     f.close()
         
@@ -17,7 +17,7 @@ def fileToString(file):
    
 #converts the contetns of a file to their respective molecule
 def convertToRDkit(contents, extension):
-    #kekulize = false
+    Chem.doKekulize = False
     
     if (extension == ".fasta"):
         return Chem.MolFromFASTA(contents)
@@ -50,7 +50,7 @@ def convertToRDkit(contents, extension):
 # This simplified functionality is for testing only
 #
 def getRDKitMolecule(path):
-    return convertToRDkit(fileToString(path))
+    return convertToRDkit(fileToString(path), path.suffix)
 
 def createParser(arguments):
   if (arguments == None):

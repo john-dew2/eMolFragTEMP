@@ -1,44 +1,41 @@
 from rdkit import Chem
-from eMolFrag2.src.utilities import constants
-from eMolFrag2.src.utilities import logging
-import BRICS_custom
+from eMolFragTEMP.src.utilities import constants
+from eMolFragTEMP.src.utilities import logging
+from eMolFragTEMP.src.chopper import BRICS_custom
+        
+def compute(rdkit_mol, snips):
+    """
+       Compute all connectivity information for bricks and linkers.
+       
+       The main algorithm is to identify where dummy atoms would be placed by BRICS breaking bonds.
+       Conventiently, given a snip (start, end) where BRICS would cleave, one atom in the snip is in a (unique)
+       fragment, while the other atom would be a radical (or dummy).
 
-def getAtomTypeMap(mol):
-  """ 
-  Get the TriposAtomTypes of the molecule as map<atom_index, AtomType> 
-  If input format molecule does not explicitly define AtomType (using
-  Atom::GetProp(_TriposAtomType) we use Atom::GetSymbol as fallback.
+       Connectivity for an atom in a fragment is the atom-type of the dummy
 
-      Parameters: 
-                mol (Rdkit.Mol): Molecule (preferably from mol2 for TriposAtomType)
+        @input: mol (Rdkit.Mol)
+        @input: bricks (set of tuples of int indices) -- integer-based brick fragments
+        @input: linkers (set of tuples of int indices) -- integer-based linker fragments
+        @input: snips (set of 2-tuples) -- bonds where we would cleave
 
-      Returns: 
-                m (matrix): Molecule Adjacency Matrix
-  """
-  try:
-    atom_atomType_map = [(id, atom.GetProp('_TriposAtomType')) for id, atom in enumerate(mol.GetAtoms())]
-  except KeyError as e:
-    logger.warning("Error: _TriposAtomType KeyError: Check input molecule type (.mol2 preferred).")
-    atom_atomType_map = [(id, atom.GetSymbol()) for id, atom in enumerate(mol.GetAtoms())]
+        @output: Molecule Database containing all linkers
+        @output: Molecule Database containing all bricks
+    """
+    # Analyze all snips in both directions
+    for (start, end) in list(snips) + [(y, x) for x, y in snips]:
+        # Each atom that is part of a BRICS cleave point may have multiple 'radical' connections;
+        # use a 'list' to track them all; properties in rdkit are strings
+        connections = rdkit_mol.GetAtomWithIdx(start).GetProp(constants.ATOM_CONNECTION_PROP) \
+                      if rdkit_mol.GetAtomWithIdx(start).HasProp(constants.ATOM_CONNECTION_PROP) else ''
+        print("pass")
+        # Add the atom type of the 'radical'
+        connections += ('' if not connections else ' ') + rdkit_mol.GetAtomWithIdx(end).GetProp(constants.ATOMTYPE_PROP)
 
-  return atom_atomType_map
+        # Get AtomType for end atom and associate it as a conenction for start
+        rdkit_mol.GetAtomWithIdx(start).SetProp(constants.ATOM_CONNECTION_PROP, connections)
 
 
 
-def getBRICSBonds(snips, mol):
-  """
-      BRICS functionality requires bonds along with isotope information
-          (bond, bond-isotopes) = ((int, int), (str, str))
 
-      For our subset of BRICS bonds, acquire these bonds.
 
-      Parameters:
-                snips (set): Set of final BRICS snip list
-                mol (Rdkit.Mol): Original Molecule
-
-      Returns:
-                bonds (set): Set of bonds formated for BreakBRICSBonds
-  """
-  return [(a, b) for a, b in list(Chem.BRICS.FindBRICSBonds(mol)) if tuple(sorted(a)) in snips]
-
-def compute(parent_mol, bricks, linkers, snips):
+        

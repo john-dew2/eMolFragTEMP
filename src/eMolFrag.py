@@ -4,7 +4,7 @@ from eMolFragTEMP.src.representation import Molecule
 from pathlib import Path
 from rdkit import Chem
 from eMolFragTEMP.src.input import AcquireFiles, AcquireMolecules, Configuration, Options
-#from eMolFragTEMP.src.input.Options import Options
+from eMolFragTEMP.unittests import utilities
 
 
 def main():
@@ -50,7 +50,11 @@ if __name__ == '__main__':
   
   
   
-  
+
   ARGS = parser.parse_args()
+  
+  if ((ARGS.i == None) or (ARGS.o == None)):
+    utilities.emit(0, f"Every command must iclude '-i' and '-o'")
+  else:
   #logging.basicConfig(level=args.loglevel)
-  main()
+    main()

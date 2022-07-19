@@ -1,6 +1,6 @@
 from rdkit import Chem
 from eMolFrag2.src.utilities import constants
-from eMolFrag2.src.utilities import logging
+from eMolFrag2.src.utilities.logging import logger
 from eMolFrag2.src.chopper import BRICS_custom
 
 def getMolMatrix(mol):
@@ -140,11 +140,9 @@ def deconstruct(rdkit_mol):
 
     # Determine where BRICS intends to chop (minus L7 bonds due to BRICS_custom)
     snips = molBRICSBonds(rdkit_mol)
-
     # NetworkX-based fragment identification over the molecule minus
     # the BRICS snip points; fragments are connected components in the graph
     nxfrags = molFragments(adj_list - snips)
-
     # logger.setLevel("WARN")
     #logger.setLevel("DEBUG")
 

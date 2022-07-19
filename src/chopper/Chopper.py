@@ -1,7 +1,6 @@
 from rdkit import Chem
 from eMolFrag2.src.utilities import logging
-import Deconstructor
-import Connectivity
+from eMolFrag2.src.chopper import Deconstructor, Connectivity
 
 def chop(rdkit_mol):
     """
@@ -32,6 +31,7 @@ def chop(rdkit_mol):
             
             Output:
     """
+
     # Remove all hydrogens from our molecule for simplicity
     stripped_mol = parent_mol.GetRDKitObject().RemoveAllHs()
 
