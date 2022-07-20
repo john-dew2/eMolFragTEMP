@@ -3,6 +3,7 @@ from eMolFragTEMP.src.input import Options
 from pathlib import Path
 from eMolFragTEMP.src.utilities import constants
 from eMolFragTEMP.unittests import utilities
+from eMolFragTEMP.src.utilities import logging
 
 #
 # Given the input path conatining molecules, make a list of all the file paths
@@ -14,7 +15,7 @@ def acquireMoleculeFiles(initializer):
   #if the folder path doesnt exist, exit processing
   if not folderPath.exists():
       #print(f'Input path {initializer.INPUT_PATH} does not exist.')
-      utilities.emit(0, f'Input path {initializer.INPUT_PATH} does not exist.')
+      logging.logger.error(f'Input path {initializer.INPUT_PATH} does not exist.')
       return None
  
   files = []
@@ -31,7 +32,7 @@ def acquireMoleculeFiles(initializer):
   #if there were any bad files, print an error
   if (len(bad_files) > 0):
       #print(f"[Error] emolFrag 2.0 only accepts the following formats {', '.join(constants.ACCEPTED_FORMATS)}")
-      utilities.emit(0, f"[Error] emolFrag 2.0 only accepts the following formats {', '.join(constants.ACCEPTED_FORMATS)}")
+      logging.logger.error(f"emolFrag 2.0 only accepts the following formats {', '.join(constants.ACCEPTED_FORMATS)}")
       #print(f"The following files will be ignored: {', '.join(bad_files)}")
   
   return files
@@ -45,7 +46,7 @@ def acquireConfigurationFile(usr_file):
     #if the folder path doesnt exist, exit processing
     if not filePath.exists():
         #print(f'Input path {usr_file} does not exist.')
-        utilities.emit(0, f"Input path {usr_file} does not exist.")
+        logging.logger.error(f"Input path {usr_file} does not exist.")
         return None
     
     return filePath

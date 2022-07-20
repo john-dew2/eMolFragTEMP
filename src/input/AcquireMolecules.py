@@ -3,6 +3,7 @@ from pathlib import Path
 from eMolFragTEMP.src.representation import Molecule
 from eMolFragTEMP.src.utilities import constants
 from eMolFragTEMP.unittests import utilities
+from eMolFragTEMP.src.utilities import logging
 
 #takes the contents of a file and puts it in a string for processing
 def fileToString(file):
@@ -57,8 +58,7 @@ def acquireMolecules(files):
       try:
           molecule = convertToRDkit(file_contents, extension)
       except:
-          #print(f"RDKit failed to read {current_file.name}")
-          utilities.emit(0, f"RDKit failed to read {current_file.name}")
+          logging.logger.error(f"RDKit failed to read {current_file.name}")
 
       #add it to our dataset and update the filenames we have
       else:

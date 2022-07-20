@@ -1,5 +1,5 @@
 #Options.py
-from eMolFragTEMP.unittests import utilities
+from eMolFragTEMP.src.utilities import logging
 
 
 #input_path
@@ -30,11 +30,7 @@ class Options:
     # Prints the current preferences for each option available
     #
     def printOptions(self):
-        print(f"Input Path:  {self.INPUT_PATH}")
-        print(f"Output Path: {self.OUTPUT_PATH}")
-        print(f"Output Format:\n    Individual Files: {self.INDIVIDUAL}\n    All Files:        {self.ALL}")
-        print(f"Execution Type:\n   Remove Redundacy: {self.UNIQUE}\n    No Removal:       {self.REDUNDANT}")
-    
+        logging.logger.info(f"\nInput Path:  {self.INPUT_PATH}\nOutput Path: {self.OUTPUT_PATH}\nOutput Format:\n    Individual Files:  {self.INDIVIDUAL}\n    All Files:         {self.ALL}\nExecution Type:\n    Remove Redundacy:  {self.UNIQUE}\n    No Removal:        {self.REDUNDANT}")
     #
     # Given an options preference, function sets an option to its correct value
     #
@@ -46,16 +42,15 @@ class Options:
         elif (argType == "-o"):
             self.OUTPUT_PATH = option
             
-        elif (argType == "-u")
+        elif (argType == "-u"):
             self.INDIVIDUAL = option
             self.ALL = not(option)
         
-        elif (argType = "-indiv")
+        elif (argType == "-indiv"):
             self.UNIQUE = option
             self.REDUNDANT = not(option)
-        
         else:
-            utilities.emit(0, f"[Error] {argType} does not exist")
+            logging.logger.error(f"{argType} does not exist")
 
     def setOptions(self, args):
       try:
@@ -74,4 +69,4 @@ class Options:
         self.setOption("-indiv", args.indiv)
       except:
        pass
-      printOptions()
+      #self.printOptions()
