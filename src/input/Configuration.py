@@ -1,31 +1,11 @@
 from pathlib import Path
 from eMolFragTEMP.src.input import AcquireFiles
 from eMolFragTEMP.unittests import utilities
-
-def createParser():
-    from argparse import ArgumentParser
-    parser = ArgumentParser(description='eMolFrag2')
-    parser.add_argument("-i",
-    type=str,
-    help='Set the input path')
-  
-    parser.add_argument("-o",
-    type=str,
-    help='Set the output path')
-  
-    parser.add_argument("-m",
-    type=int, choices=range(0,3),
-    help='Set the execution type')
-  
-    parser.add_argument("-c",
-    type=int, choices=range(0,3),
-    help='Set the output type')
-
-    return parser
+from eMolFragTEMP.src.utilities import logging
 
 def checkRequirements(arg):
   if ((arg.i == None) or (arg.o == None)):
-    utilities.emit(0, f"Every command must iclude '-i' and '-o'")
+    logging.logger.error(f"Every command must iclude '-i' and '-o'")
     return False
   return True
 #
@@ -41,7 +21,7 @@ def readConfigurationFile(config_file):
         lines = f.readlines()
 
     if (len(lines) <= 0):
-        utilities.emit(0, f"file {path.name} is empty")
+        logging.logger.error(f"File {path.name} is empty")
         return []
     
     #concatenate the contents and ignore comments
@@ -61,7 +41,7 @@ def readConfigurationFile(config_file):
 #
 def readCommandLine(initializer, arguments):
     if (arguments == None):
-      utilities.emit(0, f"Arguments were empty")
+      logging.logger.error(f"Arguments were empty")
       return None
 
     initializer.setOptions(arguments)
@@ -73,17 +53,15 @@ def readCommandLine(initializer, arguments):
 #
 def readConfigurationInput(initializer, arguments):
     arg = arguments
-
+    
     if (arg.i == None):
-      utilities.emit(0, f"No input was provided")
+      logging.logger.error(f"No input was provided")
       return None
-
     inPath = Path(arg.i)
     try:
         if (inPath.suffix == ".txt"):
           retArg = readConfigurationFile(arg.i)
-          parser = createParser()
-          arg = parser.parse_args(retArg)
+          arg = utilities.createParser(retArg)
     except:
         pass
     

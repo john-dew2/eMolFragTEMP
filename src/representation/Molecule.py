@@ -2,7 +2,7 @@
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit import DataStructs
-from eMolFrag2.src.utilities import constants
+from eMolFragTEMP.src.utilities import constants
 
 class Molecule:
     def __init__(self, rdkit_object, file_name):
