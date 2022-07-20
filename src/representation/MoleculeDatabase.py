@@ -1,11 +1,10 @@
-import math 
 from rdkit import DataStructs # For TC Computations
 
 import sys
-from eMolFrag2.src.utilities import constants 
-from eMolFrag2.src.utilities import tc
+from eMolFragTEMP.src.utilities import constants 
+from eMolFragTEMP.src.utilities import tc
 
-from eMolFrag2.src.representation.Molecule import Molecule
+from eMolFragTEMP.src.representation.Molecule import Molecule
 
 #
 # This class will simulate an equivalence class of molecules
@@ -22,21 +21,6 @@ class MoleculeDatabase(Molecule):
             raise RuntimeError
 
         self.TC_THRESH = given_tc
-
-    #
-    # @input: 2 Molecule objects
-    # @output: True if the molecules are TC-equivalent; False otherwise
-    #          (we use math.isclose to assess floating-point-based equivalent)
-    #
-    def _TCEquiv(self, mol1, mol2):
-        
-        tanimoto = tc.TC(mol1, mol2)  
-        # >   
-        if (tanimoto > self.TC_THRESH):
-          return True
-        # =                                         # 4-decimal place equality 
-        return math.isclose(tanimoto, self.TC_THRESH, rel_tol = 1e-5)
-
     
     #
     # Add one Molecule object to the database
@@ -44,8 +28,11 @@ class MoleculeDatabase(Molecule):
     # @output: if the given molecule is unique, return True (False if it is TC-redudant
     #
     def add(self, molecule):
+
+        print("Adding", molecule.getFileName())
       
-        tc_equiv = list(filter(lambda db_mol : self._TCEquiv(molecule, db_mol), self.database.keys()))
+        tc_equiv = [db_mol for db_mol in self.database.keys() \
+                    if tc.TCEquiv(molecule, db_mol, tc_threshold  = self.TC_THRESH)]
 
         if len(tc_equiv) > 1:
             print(f'Internal MoleculeDatabase error; {len(tc_equiv)}-TC equivalent molecules')            
@@ -54,9 +41,14 @@ class MoleculeDatabase(Molecule):
         if not tc_equiv:
             self.database[molecule] = []
             return True
-            
-        # Not a TC-unique fragment: { tc_equiv, [..., molecule] }
+
+        # TC-similar fragment: { tc_equiv, [..., molecule] }
+        # Add this molecule as being similar to all other molecules in this equivalence class
+        tc_equiv[0].addTCSimilar(molecule)
+        for sim_mol in self.database[tc_equiv[0]]:
+            sim_mol.addTCSimilar(molecule)
         self.database[tc_equiv[0]].append(molecule)
+
         return False
     
     #
@@ -80,4 +72,18 @@ class MoleculeDatabase(Molecule):
             all_mols += tc_mols
 
         return all_mols
+    
+    def numUnique(self):
+        return len(self.database.keys())
         
+    def numAllMolecules(self):
+        return len(self.GetAllMolecules())
+        
+    def __str__(self):
+        """
+            Output of the equivalences classes represented in this database
+        """
+        string = ""
+        for mol, equivalent in self.database.items():        
+            string += f'{mol.getFileName()}: [{", ".join([eq_mol.getFileName() for eq_mol in equivalent])}]\n'      
+        return string

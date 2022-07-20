@@ -1,7 +1,7 @@
 from rdkit import Chem
-from eMolFrag2.src.utilities import constants
-from eMolFrag2.src.utilities.logging import logger
-from eMolFrag2.src.chopper import BRICS_custom
+from eMolFragTEMP.src.utilities import constants
+from eMolFragTEMP.src.utilities import logging
+from eMolFragTEMP.src.chopper import BRICS_custom
 
 def getMolMatrix(mol):
   """ 
@@ -79,14 +79,14 @@ def combineAdjLinkerSequences(linkers, snips):
         if lx and ly:
             lx, ly = *lx, *ly
 
-            logger.debug(f"Join linkers: {[lx, ly]} on {(x,y)}.")
+            logging.logger.debug(f"Join linkers: {[lx, ly]} on {(x,y)}.")
 
             linkers -= {lx, ly} # Remove linkers 
             linkers.add(lx + ly) # Add merged linker
             snips_r.add((x, y)) # Add snip to removelist
 
-            logger.debug(f"All Linkers: {linkers}")
-            logger.debug(f"snips_r: {snips_r}")
+            logging.logger.debug(f"All Linkers: {linkers}")
+            logging.logger.debug(f"snips_r: {snips_r}")
 
     return linkers, snips_r
 
@@ -109,17 +109,19 @@ def computeFragmentsAndSnips(nxfrags, snips):
   
     # split linkers & bricks (populate sets)
     [linkers.add(tuple(x)) if len(x) <= constants.LINKER_MAXIMUM_NUM_ATOMS else bricks.add(tuple(x)) for x in nxfrags]
-    logger.debug(f"All Bricks: {bricks}")
-    logger.debug(f"All Linkers: {linkers}")
-    logger.debug(f"Snips: {snips}")
+    logging.logger.debug(f"(Before) All Bricks: {bricks}")
+    logging.logger.debug(f"(Before) All Linkers: {linkers}")
+    logging.logger.debug(f"(Before) Snips: {snips}")
 
     # Handle sequences of linkers
     linkers, snips_r = combineAdjLinkerSequences(linkers, snips)
 
+    logging.logger.debug(f"(After) All Linkers: {linkers}")
+
     # Remove snip removelist from snip list
     snips -= snips_r
     
-    logger.debug(f"Final Snips: {snips}")
+    logging.logger.debug(f"Final Snips: {snips}")
 
     return bricks, linkers, snips
     
@@ -140,9 +142,11 @@ def deconstruct(rdkit_mol):
 
     # Determine where BRICS intends to chop (minus L7 bonds due to BRICS_custom)
     snips = molBRICSBonds(rdkit_mol)
+
     # NetworkX-based fragment identification over the molecule minus
     # the BRICS snip points; fragments are connected components in the graph
     nxfrags = molFragments(adj_list - snips)
+
     # logger.setLevel("WARN")
     #logger.setLevel("DEBUG")
 

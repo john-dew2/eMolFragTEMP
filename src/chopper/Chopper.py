@@ -1,9 +1,18 @@
 from rdkit import Chem
-from eMolFrag2.src.utilities import logging
-from eMolFrag2.src.chopper import Deconstructor, Connectivity
+from eMolFragTEMP.src.utilities import *
+from eMolFragTEMP.src.chopper import Preprocessor
+from eMolFragTEMP.src.chopper import Deconstructor
+from eMolFragTEMP.src.chopper import Connectivity
+from eMolFragTEMP.src.chopper import Fragmenter
+from eMolFragTEMP.src.representation import MoleculeDatabase as MDB
+from eMolFragTEMP.src.representation import Brick
+from eMolFragTEMP.src.representation import Linker
 
 def chop(rdkit_mol):
     """
+        0. We work on a copy of the input molecule with hydrogens removed and
+           atom type information within the molecule 
+
         Chopping consists of the following algorithm:
             1. Build graph of molecule
             2. Find where BRICS would cleave (BRICS bonds) [snips in the code]
@@ -18,70 +27,67 @@ def chop(rdkit_mol):
                  linkers; all others are bricks
             4. Combine sequences of Linker-Linker fragments into single a Linker
 
-            5. Sequentially BreakBRICSBonds over each snip
-                 The resulting fragment is known to be either brick or linker.
-                 When we break the bonds with BRICS, free radicals are added.
+            5. Compute connectivity of free radicals (from each snip calc atomtype of tuple pairs)
 
-            6. Compute connectivy of freeradicals (from each snip calc atomtype of tuple pairs)
-
-            7. Link atomtypes to atoms in our fragment
+            6. Break each fragment into Rdkit.Mol objectPerform actual break of chop
             
+        Input: An rdkit molecule (ideally, with AtomType info from mol2 format)
             
-            Input: An rdkit molecule (ideally, with AtomType info from mol2 format)
-            
-            Output:
+        Output: list of Rdkit.Mol Bricks, list of Rdkit.Mol Linkers
     """
-
-    # Remove all hydrogens from our molecule for simplicity
-    stripped_mol = parent_mol.GetRDKitObject().RemoveAllHs()
+    # (0)
+    mol = Preprocessor.preprocess(rdkit_mol)
 
     #
-    # Steps (1) - (5)
+    # Steps (1) - (4)
     # Deconstruct our molecule into the known fragments
     # These are sets of atom indices (bricks, linkers); snips are a set of bonds.
+    #    * All such information 'references' the molecule, but does not modify it
     #
-    bricks, linkers, snips = Deconstructor.deconstruct(stripped_mol)
+    bricks, linkers, snips = Deconstructor.deconstruct(mol)
 
     #
-    # Steps (6) - (7)
-    # Compute connectivity and ensure atomtypes information is communicated to fragments
+    # (5): Compute connectivity among free radicals
+    #      This computation modifies the molecule with property information
+    Connectivity.compute(mol, snips)
+
     #
-    brick_db, linker_db = Connectivity.compute(rdkit_mol, bricks, linkers, snips)
+    # (6): Perform the actual chop
+    #
+    return Fragmenter.fragmentAll(mol, bricks, linkers)
+
+def chopall(mols):
+    """
+        Chop many molecules
+        
+        @input: list of Molecule objects (containing rdkit objects)
+        
+        @output: MoleculeDatabase of brick fragments
+        @output: MoleculeDatabase of linker fragments        
+    """
+    brick_db = MDB.MoleculeDatabase(constants.DEFAULT_TC_UNIQUENESS)
+    linker_db = MDB.MoleculeDatabase(constants.DEFAULT_TC_LINKER_UNIQUENESS)
+
+    for mol in mols:
+
+        logging.logger.debug(f'Processing molecule{mol.getFileName()}')
+
+        #
+        # Chop
+        #
+        bricks, linkers = chop(mol.getRDKitObject())
+
+        #
+        # Process the results
+        #
+        results = brick_db.addAll([Brick.Brick(b, mol, suffix = index) for index, b in enumerate(bricks)])
     
+        logging.logger.debug(f'Added {results.count(True)} TC-unique bricks; \
+                             {results.count(False)} were TC-redundant')
+
+        results = linker_db.addAll([Linker.Linker(ell, mol, suffix = index) for index, ell in enumerate(linkers)])
+
+        logging.logger.debug(f'Added {results.count(True)} TC-unique linkers; \
+                             {results.count(False)} were TC-redundant')
+
     return brick_db, linker_db
-
-#
-# Create and add local Brick/Linker objects to the database; report results
-#
-def processFragments(bricks, linkers, parent):
-
-    results = database.addAll([Brick(fragment, parent) for fragment in bricks])
-    
-    logging.logger.debug(f'Added {result.count(True)} TC-unique bricks; \
-                         {result.count(False)} were TC-redundant')
-
-    results = database.addAll([Linker(fragment, parent) for fragment in linkers])
-    
-    logging.logger.debug(f'Added {result.count(True)} TC-unique linkers; \
-                         {result.count(False)} were TC-redundant')
-
-#
-# Chop many molecules
-#
-# @input: list of Molecule objects (containing rdkit objects)
-# @output: MoleculeDatabase containing all fragments
-#
-def chopall(molList):
-
-    database = MoleculeDatabase()
-
-    for parent_mol in molList:
-
-        logging.logger.debug(f'Processing molecule{parent_mol.GetFileName()}')
-
-        # Actually chop and store the molecular fragments in the database
-        bricks, linkers = chop(stripped_rdkit)
-
-        processFragments(bricks, linkers, parent_mol)      
-
-    return database
